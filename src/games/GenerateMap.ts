@@ -1,10 +1,12 @@
 import { images } from "./Images";
 
-type Tile = "empty" | "main" | "tree" | "wall" | "grass";
+type Tile = "empty" | "main" | "tree" | "wall" | "grass" | "character";
 
 
 export const MAP_W = 20;
 export const MAP_H = 10;
+export const TILE_SIZE = 32;
+export const FRAME_SIZE = 32;
 
 
 let range = (size:number) => {

@@ -1,6 +1,6 @@
 import { useEffect, type RefObject } from "react";
 import { images } from "../games/Images";
-import { MAP_H, MAP_W } from "../games/GenerateMap";
+import { FRAME_SIZE, MAP_H, MAP_W, TILE_SIZE } from "../games/GenerateMap";
 
 type Props = {
     ctxRef: RefObject<HTMLCanvasElement | null>;
@@ -15,7 +15,7 @@ export const RenderCanvas = ({
     x,
     y,
 }: Props) => {
-    useEffect(() => {
+  useEffect(() => {
         const canvas = ctxRef.current;
         if (!canvas) return;
 
@@ -32,12 +32,23 @@ export const RenderCanvas = ({
                 canvas.height
             );
 
+            const frameX = 0;
+            const frameY = 0;
+
             ctx.drawImage(
                 image,
-                x * 32,
-                y * 32,
-                32,
-                32
+
+                // откуда брать кадр
+                frameX * FRAME_SIZE,
+                frameY * FRAME_SIZE,
+                FRAME_SIZE,
+                FRAME_SIZE,
+
+                // куда рисовать
+                x * TILE_SIZE,
+                y * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE
             );
         };
 
@@ -51,6 +62,7 @@ export const RenderCanvas = ({
             image.onload = null;
         };
     }, [val, x, y, ctxRef]);
+
 
     return (
         <canvas

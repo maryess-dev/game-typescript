@@ -1,12 +1,17 @@
 import { useEffect, useRef } from "react";
-import { map, MAP_H, MAP_W } from "../games/GenerateMap";
+import {
+    map,
+    MAP_H,
+    MAP_W,
+    TILE_SIZE,
+} from "../games/GenerateMap";
 import { images } from "../games/Images";
 import { GameObject } from "./GameObject";
 
 const objects = [
     { id: 1, type: "tree", x: 5, y: 5 },
     { id: 2, type: "tree", x: 8, y: 3 },
-    { id: 3, type: "tree", x: 12, y: 7 },
+    { id: 3, type: "character", x: 12, y: 7 },
     { id: 4, type: "grass", x: 15, y: 10 },
 ];
 
@@ -20,71 +25,96 @@ export const Map = () => {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            drawMap();
+        };
+
         const drawMap = () => {
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
             for (let y = 0; y < MAP_H; y++) {
                 for (let x = 0; x < MAP_W; x++) {
                     const tile = map[y][x];
 
-                    if (tile === "main") {
-                        ctx.drawImage(
-                            images.main,
-                            x * 32,
-                            y * 32,
-                            32,
-                            32
-                        );
-                    }
+                    const image = images[tile];
 
-                    if (tile === "grass") {
-                        ctx.drawImage(
-                            images.grass,
-                            x * 32,
-                            y * 32,
-                            32,
-                            32
-                        );
-                    }
+                    if (!image) continue;
 
-                    if (tile === "tree") {
-                        ctx.drawImage(
-                            images.tree,
-                            x * 32,
-                            y * 32,
-                            32,
-                            32
-                        );
-                    }
+                    ctx.drawImage(
+                        image,
+                        x * TILE_SIZE,
+                        y * TILE_SIZE,
+                        TILE_SIZE,
+                        TILE_SIZE
+                    );
                 }
             }
         };
 
-        if (images.main.complete) {
-            drawMap();
-        } else {
-            images.main.onload = drawMap;
+        const imagesToLoad = Object.values(images);
+
+        let loaded = 0;
+
+        const handleLoad = () => {
+            loaded++;
+
+            if (loaded === imagesToLoad.length) {
+                resizeCanvas();
+            }
+        };
+
+        imagesToLoad.forEach((image) => {
+            if (image.complete) {
+                loaded++;
+            } else {
+                image.onload = handleLoad;
+            }
+        });
+
+        if (loaded === imagesToLoad.length) {
+            resizeCanvas();
         }
 
+        window.addEventListener("resize", resizeCanvas);
+
         return () => {
-            images.main.onload = null;
+            window.removeEventListener(
+                "resize",
+                resizeCanvas
+            );
+
+            imagesToLoad.forEach((image) => {
+                image.onload = null;
+            });
         };
     }, []);
 
     return (
         <div
             style={{
-                position: "relative",
-                width: MAP_W * 32,
-                height: MAP_H * 32,
+                position: "fixed",
+                inset: 0,
+                width: "100vw",
+                height: "100vh",
+                overflow: "hidden",
             }}
         >
             <canvas
                 ref={canvasRef}
-                width={MAP_W * 32}
-                height={MAP_H * 32}
                 style={{
                     position: "absolute",
-                    left: 0,
-                    top: 0,
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    display: "block",
                 }}
             />
 
