@@ -1,9 +1,9 @@
-import { Map } from "../components/Map"
+import { Map } from "../components/Map";
 
 export const GamePage = () => {
-    return (
-        <div>
-            <Map/>   
-        </div>
-    )
-}
+  return (
+    <div className="relative">
+      <Map />
+    </div>
+  );
+};
