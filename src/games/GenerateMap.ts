@@ -1,4 +1,4 @@
-type Tile = "main" | "tree" | "wall" | "grass" | "character";
+type Tile = "main" | "tree" | "wall" | "grass" | "character" | "idleCharacter";
 export type GameObjectType = "tree" | "character" | "grass";
 
 export const MAP_W = 40;

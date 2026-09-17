@@ -7,9 +7,10 @@ type Props = {
   image: CanvasImageSource;
   frameX?: number;
   frameY?: number;
+  isRotate?: boolean;
 };
 
-const CHARACTER_SIZE = TILE_SIZE * 1.6;
+const CHARACTER_SIZE = TILE_SIZE * 2.6;
 
 export const createCharacterDraw = ({
   ctx,
@@ -18,20 +19,41 @@ export const createCharacterDraw = ({
   image,
   frameX = 0,
   frameY = 0,
+  isRotate = false,
 }: Props) => {
   if (!ctx) return;
 
   const characterOffset = (CHARACTER_SIZE - TILE_SIZE) / 2;
 
-  ctx.drawImage(
-    image,
-    frameX * FRAME_SIZE,
-    frameY * FRAME_SIZE,
-    FRAME_SIZE,
-    FRAME_SIZE,
-    drawX - characterOffset,
-    drawY - CHARACTER_SIZE + TILE_SIZE,
-    CHARACTER_SIZE,
-    CHARACTER_SIZE,
-  );
+  if (isRotate) {
+    ctx.save();
+    ctx.scale(-1, 1);
+
+    ctx.drawImage(
+      image,
+      frameX * FRAME_SIZE,
+      frameY * FRAME_SIZE,
+      FRAME_SIZE,
+      FRAME_SIZE,
+      -(drawX - characterOffset) - CHARACTER_SIZE,
+      drawY - CHARACTER_SIZE + TILE_SIZE,
+      CHARACTER_SIZE,
+      CHARACTER_SIZE,
+    );
+
+    ctx.restore();
+    return;
+  } else {
+    ctx.drawImage(
+      image,
+      frameX * FRAME_SIZE,
+      frameY * FRAME_SIZE,
+      FRAME_SIZE,
+      FRAME_SIZE,
+      drawX - characterOffset,
+      drawY - CHARACTER_SIZE + TILE_SIZE,
+      CHARACTER_SIZE,
+      CHARACTER_SIZE,
+    );
+  }
 };
