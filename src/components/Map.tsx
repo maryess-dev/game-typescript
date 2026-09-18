@@ -5,7 +5,12 @@ import type {
   CharacterAnimationTimers,
   ICharacter,
 } from "../entities/ character/types";
-import { drawMapObjects, drawMapTiles, getMapOffset } from "../entities/map";
+import {
+  drawMapObjects,
+  drawMapTiles,
+  drawMapTopObjects,
+  getMapOffset,
+} from "../entities/map";
 import { images } from "../games/Images";
 
 export const Map = () => {
@@ -76,6 +81,8 @@ export const Map = () => {
         frameY: playerRef.current.frameY,
         isRotate: playerRef.current.isRotate,
       });
+
+      drawMapTopObjects(ctx, offset);
     };
 
     const gameLoop = (time: number) => {

@@ -1,9 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { GamePage } from './pages/Game'
-createRoot(document.getElementById('root')!).render(
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router";
+import { Router } from "./app/router/Router";
+import "./index.css";
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <GamePage/>
+    {/* <GamePage/> */}
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
   </StrictMode>,
-)
+);

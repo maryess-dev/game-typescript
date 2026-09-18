@@ -1,4 +1,5 @@
 import { MAP_H, MAP_W, TILE_SIZE } from "../../games/GenerateMap";
+import { isBlockedCell } from "../map/collision";
 import type { ICharacter } from "./types";
 
 type MovePlayerProps = {
@@ -24,8 +25,14 @@ export const movePlayer = ({ player, dx, dy, frameY }: MovePlayerProps) => {
     Math.max(player.targetY + dy * TILE_SIZE, 0),
     (MAP_H - 1) * TILE_SIZE,
   );
+  const nextCellX = nextTargetX / TILE_SIZE;
+  const nextCellY = nextTargetY / TILE_SIZE;
 
   if (nextTargetX === player.targetX && nextTargetY === player.targetY) {
+    return;
+  }
+
+  if (isBlockedCell(nextCellX, nextCellY)) {
     return;
   }
 

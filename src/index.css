@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400..900;1,400..900&display=swap");
 
 html,
 body,
@@ -11,11 +12,15 @@ body,
   min-height: 100vh;
   min-height: 100svh;
   box-sizing: border-box;
-  background-color: rgb(254, 235, 238);
-  color: rgb(16, 16, 16);
+  background-color: #84c669;
+  color: rgb(236, 233, 233);
 }
 
 body {
+  font-family: "Besley", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
   margin: 0;
   overflow: hidden;
 }

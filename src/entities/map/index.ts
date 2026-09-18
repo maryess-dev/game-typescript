@@ -1,2 +1,7 @@
-export { drawMapObjects, drawMapTiles, getMapOffset } from "./drawMap";
+export {
+  drawMapObjects,
+  drawMapTiles,
+  drawMapTopObjects,
+  getMapOffset,
+} from "./drawMap";
 export type { MapOffset } from "./drawMap";

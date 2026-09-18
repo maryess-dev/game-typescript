@@ -10,7 +10,7 @@ type Props = {
   isRotate?: boolean;
 };
 
-const CHARACTER_SIZE = TILE_SIZE * 2.6;
+const CHARACTER_SIZE = TILE_SIZE * 3.6;
 
 export const createCharacterDraw = ({
   ctx,

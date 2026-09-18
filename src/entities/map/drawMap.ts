@@ -6,6 +6,9 @@ import {
   TILE_SIZE,
 } from "../../games/GenerateMap";
 import { images } from "../../games/Images";
+import { drawHouseBase, drawHouseTop } from "../house/drawHouse";
+import { drawRoad } from "../road/drawRoad";
+import { drawTree } from "../tree/drawTree";
 
 export type MapOffset = {
   x: number;
@@ -53,6 +56,59 @@ export const drawMapObjects = (
     const drawX = offset.x + object.x * TILE_SIZE;
     const drawY = offset.y + object.y * TILE_SIZE;
 
+    if (object.type === "tree") {
+      drawTree({
+        ctx,
+        drawX,
+        drawY,
+        image,
+      });
+
+      return;
+    }
+
+    if (object.type === "road") {
+      drawRoad({
+        ctx,
+        drawX,
+        drawY,
+        image,
+      });
+
+      return;
+    }
+
+    if (object.type === "house") {
+      drawHouseBase({
+        ctx,
+        drawX,
+        drawY,
+        image,
+      });
+
+      return;
+    }
+
     ctx.drawImage(image, drawX, drawY, TILE_SIZE, TILE_SIZE);
+  });
+};
+
+export const drawMapTopObjects = (
+  ctx: CanvasRenderingContext2D,
+  offset: MapOffset,
+) => {
+  gameObjects.forEach((object) => {
+    if (object.type !== "house") return;
+
+    const image = images[object.type];
+    const drawX = offset.x + object.x * TILE_SIZE;
+    const drawY = offset.y + object.y * TILE_SIZE;
+
+    drawHouseTop({
+      ctx,
+      drawX,
+      drawY,
+      image,
+    });
   });
 };
