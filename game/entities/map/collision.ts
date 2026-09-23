@@ -1,4 +1,4 @@
-import { gameObjects } from "../../games/GenerateMap";
+import { gameObjects } from "../../config/GenerateMap";
 
 type CollisionArea = {
   x: number;

@@ -1,4 +1,4 @@
-import { TILE_SIZE } from "../../games/GenerateMap";
+import { TILE_SIZE } from "../../config/GenerateMap";
 
 const WALK_FRAMES = 6;
 const IDLE_FRAMES = 4;

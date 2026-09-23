@@ -4,8 +4,8 @@ import {
   MAP_H,
   MAP_W,
   TILE_SIZE,
-} from "../../games/GenerateMap";
-import { images } from "../../games/Images";
+} from "../../config/GenerateMap";
+import { images } from "../../config/Images";
 import { drawHouseBase, drawHouseTop } from "../house/drawHouse";
 import { drawRoad } from "../road/drawRoad";
 import { drawTree } from "../tree/drawTree";

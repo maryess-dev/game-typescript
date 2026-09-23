@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { RenderCanvas } from "./RenderCanvas";
-import { images } from "../games/Images";
+import { images } from "../config/Images";
 
 type Props = {
     val: keyof typeof images;

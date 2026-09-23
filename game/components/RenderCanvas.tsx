@@ -1,6 +1,6 @@
 import { useEffect, type RefObject } from "react";
-import { images } from "../games/Images";
-import { FRAME_SIZE, MAP_H, MAP_W, TILE_SIZE } from "../games/GenerateMap";
+import { images } from "../config/Images";
+import { FRAME_SIZE, MAP_H, MAP_W, TILE_SIZE } from "../config/GenerateMap";
 
 type Props = {
     ctxRef: RefObject<HTMLCanvasElement | null>;

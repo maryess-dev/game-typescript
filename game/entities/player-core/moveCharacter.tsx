@@ -1,4 +1,4 @@
-import { MAP_H, MAP_W, TILE_SIZE } from "../../games/GenerateMap";
+import { MAP_H, MAP_W, TILE_SIZE } from "../../config/GenerateMap";
 import { isBlockedCell } from "../map/collision";
 import type { ICharacter } from "./types";
 

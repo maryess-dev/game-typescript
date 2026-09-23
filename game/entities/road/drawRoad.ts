@@ -1,4 +1,4 @@
-import { FRAME_SIZE, TILE_SIZE } from "../../games/GenerateMap";
+import { FRAME_SIZE, TILE_SIZE } from "../../config/GenerateMap";
 
 type Props = {
   ctx: CanvasRenderingContext2D | null;

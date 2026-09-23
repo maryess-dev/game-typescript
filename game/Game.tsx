@@ -1,19 +1,19 @@
 import { useEffect, useRef } from "react";
-import { createCharacterDraw, updatePlayer } from "../entities/ character";
-import { movementKeys, startPosition } from "../entities/ character/constants";
+import { createCharacterDraw, updatePlayer } from "./entities/Player";
+import { movementKeys, startPosition } from "./entities/Player";
 import type {
   CharacterAnimationTimers,
   ICharacter,
-} from "../entities/ character/types";
+} from "./entities/Player";
 import {
   drawMapObjects,
   drawMapTiles,
   drawMapTopObjects,
   getMapOffset,
-} from "../entities/map";
-import { images } from "../games/Images";
+} from "./entities/map";
+import { images } from "./config/Images";
 
-export const Map = () => {
+export const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pressedKeysRef = useRef(new Set<string>());
   const playerRef = useRef<ICharacter>({
