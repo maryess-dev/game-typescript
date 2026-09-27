@@ -1,9 +1,9 @@
-import { Game } from "../../game/Game";
+import  "../../game/Game";
 
 export const GamePage = () => {
   return (
-    <div className="relative">
-      <Game />
+    <div >
+     
     </div>
   );
 };
