@@ -1,5 +1,5 @@
-import characterIdleImage from "../assets/characters/farm-character/Idle.png";
-import characterImage from "../assets/characters/farm-character/Walk.png";
+import characterIdleImage from "../assets/characters/sarah/pixellab-Pixel-art-sprite-sheet-of-a-25-1790427467541.png";
+import characterImage from "../assets/characters/sarah/pixellab-Pixel-art-sprite-sheet-of-a-25-1790427467541.png";
 import houseImage from "../assets/environment/farm-objects/House.png";
 import treeImage from "../assets/environment/farm-objects/Maple Tree.png";
 import roadImage from "../assets/environment/farm-objects/Road copiar.png";

@@ -1,16 +1,22 @@
-import { FRAME_SIZE, TILE_SIZE } from "../../config/GenerateMap";
+import { TILE_SIZE } from "../../config/GenerateMap";
 
 type Props = {
   ctx: CanvasRenderingContext2D | null;
   drawX: number;
   drawY: number;
   image: CanvasImageSource;
-  frameX?: number;
-  frameY?: number;
+  frameX?: number; // Индекс колонки (0 .. 5)
+  frameY?: number; // Индекс строки (0 .. 1)
   isRotate?: boolean;
 };
 
-const CHARACTER_SIZE = TILE_SIZE * 3.6;
+// Размеры одного кадра на спрайт-шите (256x256, сетка 6x2)
+const FRAME_WIDTH = 256 / 6;  // ~42.666px
+const FRAME_HEIGHT = 128;      // 256 / 2
+
+// Вычисляем размеры персонажа на холсте с сохранением пропорций (1:3)
+const DRAW_HEIGHT = TILE_SIZE * 3.6; 
+const DRAW_WIDTH = DRAW_HEIGHT * (FRAME_WIDTH / FRAME_HEIGHT); // ~1.2 * TILE_SIZE
 
 export const createCharacterDraw = ({
   ctx,
@@ -23,37 +29,43 @@ export const createCharacterDraw = ({
 }: Props) => {
   if (!ctx) return;
 
-  const characterOffset = (CHARACTER_SIZE - TILE_SIZE) / 2;
+  // Вычисляем координаты кадра на спрайт-шите
+  const sourceX = frameX * FRAME_WIDTH;
+  const sourceY = frameY * FRAME_HEIGHT;
+
+  // Центрируем персонажа по горизонтали относительно плитки
+  const offsetX = (DRAW_WIDTH - TILE_SIZE) / 2;
+  const targetX = drawX - offsetX;
+  const targetY = drawY - DRAW_HEIGHT + TILE_SIZE;
+
+  ctx.save();
 
   if (isRotate) {
-    ctx.save();
     ctx.scale(-1, 1);
-
     ctx.drawImage(
       image,
-      frameX * FRAME_SIZE,
-      frameY * FRAME_SIZE,
-      FRAME_SIZE,
-      FRAME_SIZE,
-      -(drawX - characterOffset) - CHARACTER_SIZE,
-      drawY - CHARACTER_SIZE + TILE_SIZE,
-      CHARACTER_SIZE,
-      CHARACTER_SIZE,
+      sourceX,
+      sourceY,
+      FRAME_WIDTH,
+      FRAME_HEIGHT,
+      -targetX - DRAW_WIDTH,
+      targetY,
+      DRAW_WIDTH,
+      DRAW_HEIGHT
     );
-
-    ctx.restore();
-    return;
   } else {
     ctx.drawImage(
       image,
-      frameX * FRAME_SIZE,
-      frameY * FRAME_SIZE,
-      FRAME_SIZE,
-      FRAME_SIZE,
-      drawX - characterOffset,
-      drawY - CHARACTER_SIZE + TILE_SIZE,
-      CHARACTER_SIZE,
-      CHARACTER_SIZE,
+      sourceX,
+      sourceY,
+      FRAME_WIDTH,
+      FRAME_HEIGHT,
+      targetX,
+      targetY,
+      DRAW_WIDTH,
+      DRAW_HEIGHT
     );
   }
+
+  ctx.restore();
 };
