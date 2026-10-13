@@ -1,47 +1,25 @@
+
 import Phaser from "phaser";
+import { IntroScene } from "./scenes/IntroScene";
 
-class IntroScene extends Phaser.Scene
-{
-    preload ()
-    {
-        this.load.setBaseURL('https://cdn.phaserfiles.com/v410');
-        this.load.image('pic', 'assets/pics/baal-loader.png');
-    }
-
-    create ()
-    {
-        this.add.image(400, 300, 'pic');
-
-        const text = this.add.text(80, 550, '', { font: '16px Courier' });
-
-        text.setText([
-            `Game Title: ${game.config.gameTitle}`,
-            `Version: ${game.config.gameVersion}`
-        ]);
-    }
-}
-
-const config = {
-    scale: { mode: Phaser.Scale.FIT },
+export function createGame(parent: HTMLElement) {
+  return new Phaser.Game({
     type: Phaser.AUTO,
-    parent: 'game-container',
-    width: 800,
-    height: 600,
-    scene: IntroScene,
+    parent,
+    width: 960,
+    height: 540,
+    backgroundColor: "#11151d",
 
-    //  Open the Dev Tools
-    //  Notice that it no longer says Phaser, or the Phaser version, in the banner
-    banner: {
-        hidePhaser: true
-    }
-};
+    // Pixel-art rendering
+    pixelArt: true,
+    antialias: false,
+    roundPixels: true,
 
-const game = new Phaser.Game(config);
+    scene: [IntroScene],
 
-
-const myCustomCanvas = document.createElement('canvas');
- 
-myCustomCanvas.id = 'myCustomCanvas';
-myCustomCanvas.style = 'border: 8px solid red';
- 
-document.body.appendChild(myCustomCanvas);
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+  });
+}
