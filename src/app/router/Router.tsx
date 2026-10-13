@@ -14,9 +14,9 @@ const currentRoutes = [
 export const Router = () => {
   return (
     <Routes>
-      {/* {currentRoutes.map((route) => (
+      {currentRoutes.map((route) => (
         <Route key={route.path} path={route.path} element={route.element} />
-      ))} */}
+      ))}
     </Routes>
   );
 };

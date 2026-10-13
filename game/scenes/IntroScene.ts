@@ -1,10 +1,28 @@
-
 import Phaser from "phaser";
-import saraSheetUrl from "../assets/characters/sarah/spritesheet.png";
+const saraIdleFrames = Object.entries(
+  import.meta.glob<string>(
+    [
+      "../assets/characters/sarah/frames/frame_000[0-9].png",
+      "../assets/characters/sarah/frames/frame_001[0-5].png",
+    ],
+    {
+      eager: true,
+      query: "?url",
+      import: "default",
+    },
+  ),
+)
+  .filter(([path]) => /frame_00(?:0\d|1[0-5])\.png$/.test(path))
+  .sort(([left], [right]) => left.localeCompare(right));
 
-const FRAME_WIDTH = 1440;
-const FRAME_HEIGHT = 1440;
-const LAST_IDLE_FRAME = 15;
+const saraIdleFrameKeys = saraIdleFrames.map(
+  (frame) => `sara-idle-${frame[0].match(/frame_(\d+)\.png$/)?.[1] ?? "0"}`,
+);
+// Обратный проход возвращает анимацию к первому кадру без резкого скачка.
+const saraIdleAnimationFrames = [
+  ...saraIdleFrameKeys,
+  ...saraIdleFrameKeys.slice(1, -1).reverse(),
+];
 
 const INTRO_LINES = [
   "FindOut. A chance to start over.",
@@ -16,37 +34,32 @@ const INTRO_LINES = [
 export class IntroScene extends Phaser.Scene {
   private sara!: Phaser.GameObjects.Sprite;
   private dialogueText!: Phaser.GameObjects.Text;
-  private continueText!: Phaser.GameObjects.Text;
   private currentLine = 0;
 
   constructor() {
+    // Ключ сцены используется Phaser при запуске и переключении сцен.
     super("IntroScene");
   }
 
-preload() {
-  this.load.on("filecomplete", (key: string) => {
-    if (key === "sara") {
-      console.log("Спрайтшит Сары загружен");
-    }
-  });
+  /** Загружает кадры idle-анимации до создания игровых объектов. */
+  preload() {
+    this.load.on("loaderror", (file: Phaser.Loader.File) => {
+      console.error("Ошибка загрузки:", file.key, file.src);
+    });
 
-  this.load.on("loaderror", (file: Phaser.Loader.File) => {
-    console.error("Ошибка загрузки:", file.key, file.src);
-  });
+    saraIdleFrames.forEach((frame, index) => {
+      this.load.image(saraIdleFrameKeys[index], frame[1]);
+    });
+  }
 
-  this.load.spritesheet("sara", saraSheetUrl, {
-    frameWidth: FRAME_WIDTH,
-    frameHeight: FRAME_HEIGHT,
-  });
-}
-
+  /** Создаёт фон, заголовок, персонажа и панель диалога. */
   create() {
     const { width, height } = this.scale;
 
-    // Background
+    // Цвет фона основной камеры сцены.
     this.cameras.main.setBackgroundColor("#11151d");
 
-    // Company title
+    // Заголовок плавно появляется при старте сцены.
     const title = this.add
       .text(width / 2, 42, "F I N D O U T", {
         fontFamily: "monospace",
@@ -64,23 +77,18 @@ preload() {
       ease: "Linear",
     });
 
-    // Sara's idle animation
+    // 12 кадров/с дают умеренный темп; обратный проход смягчает повтор цикла.
     this.anims.create({
       key: "sara-idle",
-      frames: this.anims.generateFrameNumbers("sara", {
-        start: 0,
-        end: LAST_IDLE_FRAME,
-      }),
-      frameRate: 5,
+      frames: saraIdleAnimationFrames.map((key) => ({ key })),
+      frameRate: 12,
       repeat: -1,
     });
 
-    this.add.image(100, 100, "sara", 0);
-
     this.sara = this.add
-    .sprite(width / 2, height * 0.43, "sara", 0)
-    .setScale(0.1);
-
+      .sprite(width / 2, height * 0.43, saraIdleFrameKeys[0])
+      .setScale(0.8)
+      .play("sara-idle");
 
     this.tweens.add({
       targets: this.sara,
@@ -90,7 +98,7 @@ preload() {
       ease: "Linear",
     });
 
-    // Dialogue panel
+    // Панель диалога и текстовые игровые объекты поверх фона.
     const panelX = 24;
     const panelY = height - 142;
     const panelWidth = width - 48;
@@ -113,45 +121,37 @@ preload() {
       color: "#a5b4fc",
     });
 
-    this.dialogueText = this.add.text(
-      panelX + 16,
-      panelY + 38,
-      "",
-      {
+    this.dialogueText = this.add.text(panelX + 16, panelY + 38, "", {
+      fontFamily: "monospace",
+      fontSize: "16px",
+      color: "#ffffff",
+      wordWrap: { width: panelWidth - 32 },
+      lineSpacing: 6,
+    });
+
+    this.add
+      .text(width - 44, panelY + panelHeight - 12, "▼", {
         fontFamily: "monospace",
         fontSize: "16px",
-        color: "#ffffff",
-        wordWrap: { width: panelWidth - 32 },
-        lineSpacing: 6,
-      },
-    );
-
-    this.continueText = this.add
-      .text(
-        width - 44,
-        panelY + panelHeight - 12,
-        "▼",
-        {
-          fontFamily: "monospace",
-          fontSize: "16px",
-          color: "#c7d2fe",
-        },
-      )
+        color: "#c7d2fe",
+      })
       .setOrigin(1, 1);
 
     this.showLine();
 
-    // Click or press Space / Enter to continue
+    // Диалог можно продолжать кликом мыши или клавишами Space и Enter.
     this.input.on("pointerdown", () => this.nextLine());
 
     this.input.keyboard?.on("keydown-SPACE", () => this.nextLine());
     this.input.keyboard?.on("keydown-ENTER", () => this.nextLine());
   }
 
+  /** Показывает текущую реплику в панели диалога. */
   private showLine() {
     this.dialogueText.setText(INTRO_LINES[this.currentLine]);
   }
 
+  /** Переключает реплику или запускает следующую сцену после последней. */
   private nextLine() {
     if (this.currentLine < INTRO_LINES.length - 1) {
       this.currentLine += 1;
@@ -159,7 +159,7 @@ preload() {
       return;
     }
 
-    // Placeholder for the next scene
+    // После последней реплики передаём управление игровой сцене.
     this.scene.start("GameScene");
   }
 }
